@@ -1,62 +1,86 @@
 import java.util.*;
 
 class PSProcess {
-int pid, arrivalTime, burstTime, priority, waitingTime, turnaroundTime;
+    int pid, arrivalTime, burstTime, priority, waitingTime, turnaroundTime;
 
-PSProcess(int pid, int at, int bt, int pr) {
-this.pid = pid;
-this.arrivalTime = at;
-this.burstTime = bt;
-this.priority = pr;
-}
-}
-
-public class PriorityScheduling {
-
-public static void main(String[] args) {
-
-//Change input in this block |
-List<PSProcess> processes = Arrays.asList(
-new PSProcess(1, 0, 5, 2),
-new PSProcess(2, 1, 3, 1),
-new PSProcess(3, 2, 8, 3)
-);
-
-processes.sort(Comparator.comparingInt(p -> p.arrivalTime));
-
-int time = 0;
-List<PSProcess> completed = new ArrayList<>();
-
-while (completed.size() < processes.size()) {
-PSProcess highest = null;
-
-for (PSProcess p : processes) {
-if (!completed.contains(p) && p.arrivalTime <= time) {
-if (highest == null || p.priority < highest.priority)
-highest = p;
-}
+    PSProcess(int pid, int at, int bt, int pr) {
+        this.pid = pid;
+        this.arrivalTime = at;
+        this.burstTime = bt;
+        this.priority = pr;
+    }
 }
 
-if (highest == null) {
-time++;
-continue;
-}
+public class PriorityScheduling1 {
 
-highest.waitingTime = time - highest.arrivalTime;
-time += highest.burstTime;
-highest.turnaroundTime = highest.waitingTime + highest.burstTime;
+    public static void main(String[] args) {
 
-completed.add(highest);
-}
+        Scanner sc = new Scanner(System.in);
 
-System.out.println("Priority (Non-Preemptive) Scheduling:");
-for (PSProcess p : processes) {
-System.out.println(
-"P" + p.pid +
-" Priority=" + p.priority +
-" WT=" + p.waitingTime +
-" TT=" + p.turnaroundTime
-);
-}
-}
+        System.out.print("Enter number of processes: ");
+        int n = sc.nextInt();
+
+        List<PSProcess> processes = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            System.out.println("\nEnter details for Process " + (i + 1) + ":");
+
+            System.out.print("Process ID: ");
+            int pid = sc.nextInt();
+
+            System.out.print("Arrival Time: ");
+            int at = sc.nextInt();
+
+            System.out.print("Burst Time: ");
+            int bt = sc.nextInt();
+
+            System.out.print("Priority (lower number = higher priority): ");
+            int pr = sc.nextInt();
+
+            processes.add(new PSProcess(pid, at, bt, pr));
+        }
+
+        // Sort by Arrival Time
+        processes.sort(Comparator.comparingInt(p -> p.arrivalTime));
+
+        int time = 0;
+        List<PSProcess> completed = new ArrayList<>();
+
+        // Non-Preemptive Priority Scheduling
+        while (completed.size() < processes.size()) {
+
+            PSProcess highest = null;
+
+            for (PSProcess p : processes) {
+                if (!completed.contains(p) && p.arrivalTime <= time) {
+                    if (highest == null || p.priority < highest.priority) {
+                        highest = p;
+                    }
+                }
+            }
+
+            if (highest == null) {
+                time++;
+                continue;
+            }
+
+            highest.waitingTime = time - highest.arrivalTime;
+            time += highest.burstTime;
+            highest.turnaroundTime = highest.waitingTime + highest.burstTime;
+
+            completed.add(highest);
+        }
+
+        System.out.println("\n===== Priority Scheduling (Non-Preemptive) =====");
+        System.out.println("PID\tAT\tBT\tPR\tWT\tTT");
+
+        for (PSProcess p : processes) {
+            System.out.println(
+                p.pid + "\t" + p.arrivalTime + "\t" + p.burstTime + "\t" +
+                p.priority + "\t" + p.waitingTime + "\t" + p.turnaroundTime
+            );
+        }
+
+        sc.close();
+    }
 }
