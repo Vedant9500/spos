@@ -2,7 +2,7 @@
 import java.io.*;
 import java.util.*;
 
-class MacroProcessor {
+public class MacroProcessor {
     static class MacroEntry {
         int mdtIndex;
         List<String> params;
@@ -254,3 +254,4 @@ class Pair<F, S> {
         this.second = second;
     }
 }
+
