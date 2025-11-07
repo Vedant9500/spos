@@ -1,0 +1,10 @@
+Macro Definition Table (MDT):
+Index	Definition
+0	INCR &ARG1, &ARG2
+1	MOVER AREG, ARG1,
+2	ADD AREG, ARG2
+3	MEND
+4	DECR &ARG3, &ARG4
+5	MOVER AREG, ARG3,
+6	SUB AREG, ARG4
+7	MEND
