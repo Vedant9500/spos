@@ -1,0 +1,81 @@
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.concurrent.Semaphore;
+
+class Buffer {
+    private Queue<Integer> queue = new LinkedList<>();
+    private int size;
+
+    private Semaphore mutex = new Semaphore(1);
+    private Semaphore empty;
+    private Semaphore full = new Semaphore(0);
+
+    public Buffer(int size) {
+        this.size = size;
+        empty = new Semaphore(size);
+    }
+
+    public void produce(int item) throws InterruptedException {
+        empty.acquire();
+        mutex.acquire();
+
+        queue.add(item);
+        System.out.println("Producer produced: " + item);
+
+        mutex.release();
+        full.release();
+    }
+
+    public void consume() throws InterruptedException {
+        full.acquire();
+        mutex.acquire();
+
+        int item = queue.remove();
+        System.out.println("Consumer consumed: " + item);
+
+        mutex.release();
+        empty.release();
+    }
+}
+
+class Producer extends Thread {
+    Buffer buffer;
+
+    Producer(Buffer b) {
+        this.buffer = b;
+    }
+
+    public void run() {
+        for (int i = 1; i <= 10; i++) {
+            try {
+                buffer.produce(i);
+                Thread.sleep(100);
+            } catch (Exception e) {}
+        }
+    }
+}
+
+class Consumer extends Thread {
+    Buffer buffer;
+
+    Consumer(Buffer b) {
+        this.buffer = b;
+    }
+
+    public void run() {
+        for (int i = 1; i <= 10; i++) {
+            try {
+                buffer.consume();
+                Thread.sleep(150);
+            } catch (Exception e) {}
+        }
+    }
+}
+
+public class ProducerConsumer {
+    public static void main(String[] args) {
+        Buffer buffer = new Buffer(5);
+        new Producer(buffer).start();
+        new Consumer(buffer).start();
+    }
+}

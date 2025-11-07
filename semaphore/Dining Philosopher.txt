@@ -1,0 +1,55 @@
+import java.util.concurrent.Semaphore;
+
+public class DiningPhilosophers {
+
+    private static final int N = 5;        // number of philosophers
+    private static Semaphore[] forks = new Semaphore[N];
+    private static Semaphore mutex = new Semaphore(1); // ensures no deadlock
+
+    // Philosopher Thread
+    static class Philosopher extends Thread {
+        int id;
+
+        Philosopher(int id) {
+            this.id = id;
+        }
+
+        public void run() {
+            try {
+                for (int i = 1; i <= 3; i++) {     // each philosopher eats 3 times
+
+                    // Philosopher is thinking
+                    System.out.println("Philosopher " + id + " is thinking.");
+                    Thread.sleep(1000);
+
+                    // Try to pick forks (critical section)
+                    mutex.acquire();        // ensures no circular deadlock
+                    forks[id].acquire();               // pick left fork
+                    forks[(id + 1) % N].acquire();     // pick right fork
+                    mutex.release();
+
+                    // Philosopher is eating
+                    System.out.println("Philosopher " + id + " is eating.");
+                    Thread.sleep(1500);
+
+                    // Philosopher finished eating
+                    forks[id].release();
+                    forks[(id + 1) % N].release();
+                    System.out.println("Philosopher " + id + " finished eating (" + i + " times).\n");
+                }
+            } catch (InterruptedException e) {
+                System.out.println("Philosopher " + id + " was interrupted.");
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        // Initialize semaphores (forks)
+        for (int i = 0; i < N; i++)
+            forks[i] = new Semaphore(1);
+
+        // Create and start philosopher threads
+        for (int i = 0; i < N; i++)
+            new Philosopher(i).start();
+    }
+}

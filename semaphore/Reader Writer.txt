@@ -1,0 +1,74 @@
+import java.util.concurrent.Semaphore;
+
+public class ReaderWriter {
+
+    static int data = 0;      // Shared data
+    static int readers = 0;   // Number of active readers
+
+    static Semaphore mutex = new Semaphore(1);     // Protects readers counter
+    static Semaphore writeLock = new Semaphore(1); // Ensures mutual exclusion for writers
+
+    // Reader Thread
+    static class Reader extends Thread {
+        int readerID;
+
+        Reader(int id) {
+            this.readerID = id;
+        }
+
+        public void run() {
+            try {
+                mutex.acquire();      // lock to update readers count
+                readers++;
+                if (readers == 1)
+                    writeLock.acquire();   // first reader blocks writers
+                mutex.release();      // unlock readers count
+
+                System.out.println("Reader " + readerID + " reads data: " + data);
+                Thread.sleep(500);    // simulate reading
+
+                mutex.acquire();      // lock to update readers count
+                readers--;
+                if (readers == 0)
+                    writeLock.release();   // last reader allows writers
+                mutex.release();
+
+            } catch (InterruptedException e) {
+                System.out.println(e);
+            }
+        }
+    }
+
+    // Writer Thread
+    static class Writer extends Thread {
+        int writerID;
+
+        Writer(int id) {
+            this.writerID = id;
+        }
+
+        public void run() {
+            try {
+                writeLock.acquire();  // exclusive access to data
+                data++;
+                System.out.println("Writer " + writerID + " writes data: " + data);
+                Thread.sleep(500);    // simulate writing
+                writeLock.release();
+
+            } catch (InterruptedException e) {
+                System.out.println(e);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+
+        // Starting writer threads
+        for (int i = 1; i <= 3; i++)
+            new Writer(i).start();
+
+        // Starting reader threads
+        for (int i = 1; i <= 5; i++)
+            new Reader(i).start();
+    }
+}
