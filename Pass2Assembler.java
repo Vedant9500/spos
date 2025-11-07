@@ -20,12 +20,14 @@ public class Pass2Assembler {
     static Map<Integer, Literal> littab = new HashMap<>();
 
     public static void main(String[] args) throws Exception {
-        String baseDir = "c:\\Users\\DNYANESHWAR\\OneDrive\\Desktop\\finalspos\\";
-        String intermediateFile = baseDir + "intermediate_code.txt";  // Changed from intermediate.txt
-        String symFile = baseDir + "symbol_table.txt";
-        String litFile = baseDir + "literal_table.txt";
-        String poolFile = baseDir + "pool_table.txt";    // Added pool table file
-        String outputFile = baseDir + "Machinecode.txt";
+        // Use command-line args if provided, otherwise use files in current working directory.
+        // Usage (optional): java Pass2Assembler <intermediate> <symfile> <litfile> <poolfile> <outputfile>
+        String cwd = System.getProperty("user.dir") + File.separator;
+        String intermediateFile = (args.length >= 1) ? args[0] : cwd + "intermediate_code.txt";
+        String symFile = (args.length >= 2) ? args[1] : cwd + "symbol_table.txt";
+        String litFile = (args.length >= 3) ? args[2] : cwd + "literal_table.txt";
+        String poolFile = (args.length >= 4) ? args[3] : cwd + "pool_table.txt";
+        String outputFile = (args.length >= 5) ? args[4] : cwd + "Machinecode.txt";
 
         // Check if input files exist
         File symFileObj = new File(symFile);
