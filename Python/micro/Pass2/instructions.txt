@@ -1,0 +1,1 @@
+make all txt files as provided in the folder
