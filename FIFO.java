@@ -1,32 +1,46 @@
 import java.util.*;
 
 public class FIFOPageReplacement {
-    
+
     public static void fifoPageReplacement(int[] pages, int frameSize) {
         List<Integer> frames = new ArrayList<>();
         int pageFaults = 0;
 
+        System.out.println("\n--- FIFO Page Replacement ---");
+
         for (int page : pages) {
             if (!frames.contains(page)) {
-                // Page fault occurs
                 pageFaults++;
+
                 if (frames.size() < frameSize) {
                     frames.add(page);
                 } else {
-                    // Remove the oldest page (FIFO)
-                    frames.remove(0);
+                    frames.remove(0);   // FIFO remove oldest
                     frames.add(page);
                 }
             }
-            System.out.println("Frames: " + frames);
+            System.out.println("Page: " + page + "  ->  Frames: " + frames);
         }
 
         System.out.println("\nTotal Page Faults: " + pageFaults);
     }
 
     public static void main(String[] args) {
-        int[] pages = {2, 3, 2, 1, 5, 2, 4, 5, 3, 2, 5, 2};
-        int frameSize = 3;
+        Scanner sc = new Scanner(System.in);
+
+        // Input frame size
+        System.out.print("Enter number of frames: ");
+        int frameSize = sc.nextInt();
+
+        // Input number of pages
+        System.out.print("Enter number of pages: ");
+        int n = sc.nextInt();
+
+        int[] pages = new int[n];
+        System.out.println("Enter page reference string:");
+        for (int i = 0; i < n; i++) {
+            pages[i] = sc.nextInt();
+        }
 
         fifoPageReplacement(pages, frameSize);
     }
