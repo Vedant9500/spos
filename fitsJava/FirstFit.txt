@@ -1,35 +1,60 @@
+
 import java.util.*;
 
 public class Firstfit {
 
-public static void main(String[] args) {
+    public static void main(String[] args) {
 
-//Change inputs in this block |
-int[] memoryBlocks = {100, 500, 200, 300, 600};
-int[] processSize = {212, 417, 112, 426};
+        Scanner sc = new Scanner(System.in);
 
-int[] allocation = new int[processSize.length];
-Arrays.fill(allocation, -1);
+        // Input for memory blocks
+        System.out.print("Enter number of memory blocks: ");
+        int m = sc.nextInt();
 
-System.out.println("----- First Fit Allocation -----");
+        int[] memoryBlocks = new int[m];
+        System.out.println("Enter sizes of memory blocks:");
+        for (int i = 0; i < m; i++) {
+            System.out.print("Block " + i + ": ");
+            memoryBlocks[i] = sc.nextInt();
+        }
 
-for (int i = 0; i < processSize.length; i++) {
-for (int j = 0; j < memoryBlocks.length; j++) {
-if (memoryBlocks[j] >= processSize[i]) {
-allocation[i] = j;
-memoryBlocks[j] -= processSize[i];
+        // Input for processes
+        System.out.print("\nEnter number of processes: ");
+        int n = sc.nextInt();
 
-System.out.println("Process " + i + " (size " + processSize[i] +
-") allocated to Block " + j +
-" (remaining " + memoryBlocks[j] + ")");
+        int[] processSize = new int[n];
+        System.out.println("Enter sizes of processes:");
+        for (int i = 0; i < n; i++) {
+            System.out.print("Process " + i + ": ");
+            processSize[i] = sc.nextInt();
+        }
 
-break;
-}
-}
+        int[] allocation = new int[n];
+        Arrays.fill(allocation, -1);
 
-if (allocation[i] == -1) {
-System.out.println("Process " + i + " (size " + processSize[i] + ") NOT allocated.");
-}
-}
-}
+        System.out.println("\n----- First Fit Allocation -----");
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (memoryBlocks[j] >= processSize[i]) {
+
+                    allocation[i] = j;
+                    memoryBlocks[j] -= processSize[i];
+
+                    System.out.println("Process " + i + " (size " + processSize[i] +
+                            ") allocated to Block " + j +
+                            " (remaining " + memoryBlocks[j] + ")");
+
+                    break; // First Fit → stop at the first suitable block
+                }
+            }
+
+            if (allocation[i] == -1) {
+                System.out.println("Process " + i + " (size " + processSize[i] +
+                        ") NOT allocated.");
+            }
+        }
+
+        sc.close();
+    }
 }
