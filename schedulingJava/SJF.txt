@@ -1,67 +1,82 @@
 import java.util.*;
 
 class SJFProcess {
-int pid, arrivalTime, burstTime;
-int remainingTime;
-int waitingTime, turnaroundTime;
+    int pid, arrivalTime, burstTime;
+    int remainingTime;
+    int waitingTime, turnaroundTime;
 
-SJFProcess(int pid, int arrivalTime, int burstTime) {
-this.pid = pid;
-this.arrivalTime = arrivalTime;
-this.burstTime = burstTime;
-this.remainingTime = burstTime;
-}
+    SJFProcess(int pid, int arrivalTime, int burstTime) {
+        this.pid = pid;
+        this.arrivalTime = arrivalTime;
+        this.burstTime = burstTime;
+        this.remainingTime = burstTime;
+    }
 }
 
 public class SJF {
 
-public static void main(String[] args) {
+    public static void main(String[] args) {
 
-//Change inputs in this block |
-List<SJFProcess> processes = Arrays.asList(
-new SJFProcess(1, 0, 7),
-new SJFProcess(2, 2, 4),
-new SJFProcess(3, 4, 1),
-new SJFProcess(4, 5, 4)
-);
+        Scanner sc = new Scanner(System.in);
 
-int time = 0, completed = 0;
-int n = processes.size();
+        System.out.print("Enter number of processes: ");
+        int n = sc.nextInt();
 
-while (completed < n) {
+        List<SJFProcess> processes = new ArrayList<>();
 
-SJFProcess shortest = null;
+        for (int i = 0; i < n; i++) {
+            System.out.println("\nEnter details for Process " + (i + 1) + ":");
 
-for (SJFProcess p : processes) {
-if (p.arrivalTime <= time && p.remainingTime > 0) {
-if (shortest == null || p.remainingTime < shortest.remainingTime) {
-shortest = p;
-}
-}
-}
+            System.out.print("Process ID: ");
+            int pid = sc.nextInt();
 
-if (shortest == null) {
-time++;
-continue;
-}
+            System.out.print("Arrival Time: ");
+            int at = sc.nextInt();
 
-shortest.remainingTime--;
-time++;
+            System.out.print("Burst Time: ");
+            int bt = sc.nextInt();
 
-if (shortest.remainingTime == 0) {
-completed++;
-shortest.turnaroundTime = time - shortest.arrivalTime;
-shortest.waitingTime = shortest.turnaroundTime - shortest.burstTime;
-}
-}
+            processes.add(new SJFProcess(pid, at, bt));
+        }
 
-System.out.println("SJF Preemptive (SRTF) Scheduling:");
-for (SJFProcess p : processes) {
-System.out.println(
-"P" + p.pid +
-" | WT = " + p.waitingTime +
-" | TT = " + p.turnaroundTime
-);
-}
-}
+        int time = 0, completed = 0;
+
+        // SRTF Simulation
+        while (completed < n) {
+
+            SJFProcess shortest = null;
+
+            for (SJFProcess p : processes) {
+                if (p.arrivalTime <= time && p.remainingTime > 0) {
+                    if (shortest == null || p.remainingTime < shortest.remainingTime) {
+                        shortest = p;
+                    }
+                }
+            }
+
+            if (shortest == null) {
+                time++;
+                continue;
+            }
+
+            shortest.remainingTime--;
+            time++;
+
+            if (shortest.remainingTime == 0) {
+                completed++;
+                shortest.turnaroundTime = time - shortest.arrivalTime;
+                shortest.waitingTime = shortest.turnaroundTime - shortest.burstTime;
+            }
+        }
+
+        System.out.println("\n===== SJF Preemptive (SRTF) Scheduling Result =====");
+        System.out.println("PID\tAT\tBT\tWT\tTT");
+
+        for (SJFProcess p : processes) {
+            System.out.println(p.pid + "\t" + p.arrivalTime + "\t" + p.burstTime +
+                               "\t" + p.waitingTime + "\t" + p.turnaroundTime);
+        }
+
+        sc.close();
+    }
 }
