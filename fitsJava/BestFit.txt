@@ -2,38 +2,62 @@ import java.util.*;
 
 public class BestFit {
 
-public static void main(String[] args) {
+    public static void main(String[] args) {
 
-//Change inputs in this block |
-int[] memoryBlocks = {100, 500, 200, 300, 600};
-int[] processSize = {212, 417, 112, 426};
+        Scanner sc = new Scanner(System.in);
 
-int[] allocation = new int[processSize.length];
-Arrays.fill(allocation, -1);
+        // Input memory blocks
+        System.out.print("Enter number of memory blocks: ");
+        int m = sc.nextInt();
 
-System.out.println("----- Best Fit Allocation -----");
+        int[] memoryBlocks = new int[m];
+        System.out.println("Enter sizes of memory blocks:");
+        for (int i = 0; i < m; i++) {
+            System.out.print("Block " + i + ": ");
+            memoryBlocks[i] = sc.nextInt();
+        }
 
-for (int i = 0; i < processSize.length; i++) {
+        // Input process sizes
+        System.out.print("\nEnter number of processes: ");
+        int n = sc.nextInt();
 
-int bestIdx = -1;
+        int[] processSize = new int[n];
+        System.out.println("Enter sizes of processes:");
+        for (int i = 0; i < n; i++) {
+            System.out.print("Process " + i + ": ");
+            processSize[i] = sc.nextInt();
+        }
 
-for (int j = 0; j < memoryBlocks.length; j++) {
-if (memoryBlocks[j] >= processSize[i]) {
-if (bestIdx == -1 || memoryBlocks[j] < memoryBlocks[bestIdx])
-bestIdx = j;
-}
-}
+        int[] allocation = new int[n];
+        Arrays.fill(allocation, -1);
 
-if (bestIdx != -1) {
-allocation[i] = bestIdx;
-memoryBlocks[bestIdx] -= processSize[i];
+        System.out.println("\n----- Best Fit Allocation -----");
 
-System.out.println("Process " + i + " (size " + processSize[i] +
-") allocated to Block " + bestIdx +
-" (remaining " + memoryBlocks[bestIdx] + ")");
-} else {
-System.out.println("Process " + i + " (size " + processSize[i] + ") NOT allocated.");
-}
-}
-}
+        for (int i = 0; i < n; i++) {
+
+            int bestIdx = -1;
+
+            // Find the best fit block
+            for (int j = 0; j < m; j++) {
+                if (memoryBlocks[j] >= processSize[i]) {
+                    if (bestIdx == -1 || memoryBlocks[j] < memoryBlocks[bestIdx])
+                        bestIdx = j;
+                }
+            }
+
+            if (bestIdx != -1) {
+                allocation[i] = bestIdx;
+                memoryBlocks[bestIdx] -= processSize[i];
+
+                System.out.println("Process " + i + " (size " + processSize[i] +
+                        ") allocated to Block " + bestIdx +
+                        " (remaining " + memoryBlocks[bestIdx] + ")");
+            } else {
+                System.out.println("Process " + i + " (size " + processSize[i] +
+                        ") NOT allocated.");
+            }
+        }
+
+        sc.close();
+    }
 }
