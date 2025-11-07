@@ -1,4 +1,2 @@
-Macro Name Table (MNT):
-Name	MDT Index	ALA Index
-INCR	0		0
-DECR	4		1
+INCR 0 0
+DECR 4 1
