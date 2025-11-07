@@ -1,0 +1,46 @@
+import java.util.*;
+
+public class NextFit {
+
+public static void main(String[] args) {
+
+//Change inputs in this blocks |
+int[] memoryBlocks = {100, 500, 200, 300, 600};
+int[] processSize = {212, 417, 112, 426};
+
+int[] allocation = new int[processSize.length];
+Arrays.fill(allocation, -1);
+
+int lastPtr = 0;
+
+System.out.println("----- Next Fit Allocation -----");
+
+for (int i = 0; i < processSize.length; i++) {
+
+int j = lastPtr;
+boolean allocated = false;
+
+do {
+if (memoryBlocks[j] >= processSize[i]) {
+allocation[i] = j;
+memoryBlocks[j] -= processSize[i];
+lastPtr = j;
+
+System.out.println("Process " + i + " (size " + processSize[i] +
+") allocated to Block " + j +
+" (remaining " + memoryBlocks[j] + ")");
+
+allocated = true;
+break;
+}
+
+j = (j + 1) % memoryBlocks.length;
+
+} while (j != lastPtr);
+
+if (!allocated) {
+System.out.println("Process " + i + " (size " + processSize[i] + ") NOT allocated.");
+}
+}
+}
+}

@@ -1,0 +1,39 @@
+import java.util.*;
+
+public class BestFit {
+
+public static void main(String[] args) {
+
+//Change inputs in this block |
+int[] memoryBlocks = {100, 500, 200, 300, 600};
+int[] processSize = {212, 417, 112, 426};
+
+int[] allocation = new int[processSize.length];
+Arrays.fill(allocation, -1);
+
+System.out.println("----- Best Fit Allocation -----");
+
+for (int i = 0; i < processSize.length; i++) {
+
+int bestIdx = -1;
+
+for (int j = 0; j < memoryBlocks.length; j++) {
+if (memoryBlocks[j] >= processSize[i]) {
+if (bestIdx == -1 || memoryBlocks[j] < memoryBlocks[bestIdx])
+bestIdx = j;
+}
+}
+
+if (bestIdx != -1) {
+allocation[i] = bestIdx;
+memoryBlocks[bestIdx] -= processSize[i];
+
+System.out.println("Process " + i + " (size " + processSize[i] +
+") allocated to Block " + bestIdx +
+" (remaining " + memoryBlocks[bestIdx] + ")");
+} else {
+System.out.println("Process " + i + " (size " + processSize[i] + ") NOT allocated.");
+}
+}
+}
+}
