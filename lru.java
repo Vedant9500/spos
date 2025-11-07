@@ -4,47 +4,57 @@ public class LRUPageReplacement {
 
     public static void lruPageReplacement(int[] pages, int frameSize) {
         List<Integer> frames = new ArrayList<>();
-        Map<Integer, Integer> recentUsage = new HashMap<>(); // Tracks last usage index
+        Map<Integer, Integer> recentUse = new HashMap<>();
         int pageFaults = 0;
+
+        System.out.println("\n--- LRU Page Replacement ---");
 
         for (int i = 0; i < pages.length; i++) {
             int page = pages[i];
 
             if (!frames.contains(page)) {
                 pageFaults++;
+
                 if (frames.size() < frameSize) {
                     frames.add(page);
                 } else {
-                    // Find the least recently used page in frames
+                    // Find least recently used page
                     int lruPage = frames.get(0);
-                    int minUsage = Integer.MAX_VALUE;
-
-                    for (int f : frames) {
-                        int lastUsed = recentUsage.getOrDefault(f, -1);
-                        if (lastUsed < minUsage) {
-                            minUsage = lastUsed;
-                            lruPage = f;
+                    for (int p : frames) {
+                        if (recentUse.get(p) < recentUse.get(lruPage)) {
+                            lruPage = p;
                         }
                     }
-
-                    // Replace LRU page
-                    int lruIndex = frames.indexOf(lruPage);
-                    frames.set(lruIndex, page);
+                    frames.remove(Integer.valueOf(lruPage));
+                    frames.add(page);
                 }
             }
 
-            // Update last usage of current page
-            recentUsage.put(page, i);
+            // Update recent use time
+            recentUse.put(page, i);
 
-            System.out.println("Frames after accessing " + page + ": " + frames);
+            System.out.println("Page: " + page + "  ->  Frames: " + frames);
         }
 
         System.out.println("\nTotal Page Faults: " + pageFaults);
     }
 
     public static void main(String[] args) {
-        int[] pages = {2, 3, 2, 1, 5, 2, 4, 5, 3, 2, 5, 2};
-        int frameSize = 3;
+        Scanner sc = new Scanner(System.in);
+
+        // Input frame size
+        System.out.print("Enter number of frames: ");
+        int frameSize = sc.nextInt();
+
+        // Input number of pages
+        System.out.print("Enter number of pages: ");
+        int n = sc.nextInt();
+
+        int[] pages = new int[n];
+        System.out.println("Enter page reference string:");
+        for (int i = 0; i < n; i++) {
+            pages[i] = sc.nextInt();
+        }
 
         lruPageReplacement(pages, frameSize);
     }
